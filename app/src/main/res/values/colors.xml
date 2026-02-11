@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand Colors -->
+    <color name="colorPrimary">#1E8AD7</color>
+    <color name="colorPrimaryDark">#1670B0</color>
+    <color name="colorSecondary">#7B3FE4</color>
+    <color name="colorAccent">#D93AE6</color>
+
+    <!-- Background & Surface -->
+    <color name="colorBackground">#F6F8FC</color>
+    <color name="colorCard">#FFFFFF</color>
+    <color name="colorSurface">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="colorTextMain">#222222</color>
+    <color name="colorTextSecondary">#6E6E6E</color>
+    <color name="colorTextOnPrimary">#FFFFFF</color>
+
+    <!-- Border & Divider -->
+    <color name="colorBorder">#E6EAF2</color>
+
+    <!-- Gradient -->
+    <color name="gradientStart">#1DB7FF</color>
+    <color name="gradientCenter">#7B3FE4</color>
+    <color name="gradientEnd">#D93AE6</color>
+
+    <!-- Status -->
+    <color name="colorSuccess">#2ECC71</color>
+    <color name="colorWarning">#F39C12</color>
+
+    <!-- Bottom Nav -->
+    <color name="bottomNavBackground">#FFFFFF</color>
+    <color name="bottomNavActive">#1E8AD7</color>
+    <color name="bottomNavInactive">#9E9E9E</color>
+
+    <!-- Standard -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

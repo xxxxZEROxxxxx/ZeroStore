@@ -1,3 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ZeroStore</string>
+    <string name="app_name">Zero Store</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_categories">الأقسام</string>
+    <string name="nav_offers">العروض</string>
+    <string name="nav_support">الدعم</string>
+
+    <!-- Home -->
+    <string name="home_top_products">الأكثر طلباً</string>
+    <string name="home_categories">الأقسام</string>
+    <string name="search_coming_soon">البحث قريباً</string>
+
+    <!-- Banners -->
+    <string name="banner_1_title">🔥 أقوى اشتراكات الذكاء الاصطناعي</string>
+    <string name="banner_1_subtitle">ChatGPT Plus, Gemini Advanced والمزيد</string>
+    <string name="banner_2_title">🎮 شحن ألعابك المفضلة</string>
+    <string name="banner_2_subtitle">PUBG, Free Fire بأسعار منافسة</string>
+    <string name="banner_3_title">🎬 اشتراكات البث بأفضل الأسعار</string>
+    <string name="banner_3_subtitle">Netflix, Shahid VIP, Disney+</string>
+
+    <!-- Categories -->
+    <string name="cat_ai">اشتراكات الذكاء الاصطناعي</string>
+    <string name="cat_gaming">الألعاب</string>
+    <string name="cat_streaming">البث والمشاهدة</string>
+    <string name="cat_design">التصميم والمونتاج</string>
+    <string name="cat_gift_cards">بطاقات الهدايا</string>
+    <string name="cat_software">البرامج والسوشال ميديا</string>
+    <string name="cat_esim">شرائح إلكترونية eSIM</string>
+    <string name="cat_mobile">حزم جوال</string>
+
+    <!-- Product Details -->
+    <string name="product_price">السعر</string>
+    <string name="product_duration">المدة</string>
+    <string name="product_delivery_time">وقت التسليم</string>
+    <string name="product_warranty">الضمان</string>
+    <string name="product_description">الوصف</string>
+    <string name="product_requirements">ما المطلوب من العميل؟</string>
+    <string name="product_notes">ملاحظات</string>
+    <string name="product_not_specified">غير محدد</string>
+    <string name="btn_details">تفاصيل</string>
+    <string name="btn_view_products">شاهد المنتجات</string>
+
+    <!-- Purchase -->
+    <string name="buy_whatsapp">شراء عبر واتساب</string>
+    <string name="buy_telegram">شراء عبر تيليجرام</string>
+    <string name="copy_order">نسخ رسالة الطلب</string>
+    <string name="order_copied">تم نسخ رسالة الطلب ✅</string>
+
+    <!-- Order Message Template -->
+    <string name="order_message_template">مرحباً Zero Store 👋\nأريد شراء الخدمة التالية من التطبيق:\n\n🛒 الخدمة: %1$s\n📦 القسم: %2$s\n💰 السعر: %3$s %4$s\n⏳ المدة: %5$s\n⚡ وقت التسليم: %6$s\n🛡️ الضمان: %7$s\n\n✅ المطلوب مني: %8$s\n\nفضلاً أرسل طرق الدفع المتاحة وكيفية التسليم. شكراً 🌟</string>
+
+    <!-- App Not Installed Dialog -->
+    <string name="app_not_installed_title">التطبيق غير مثبت</string>
+    <string name="app_not_installed_message">التطبيق غير مثبت. هل تريد نسخ رسالة الطلب؟</string>
+    <string name="btn_copy">نسخ</string>
+    <string name="btn_cancel">إلغاء</string>
+
+    <!-- Support -->
+    <string name="support_title">الدعم والتواصل</string>
+    <string name="support_whatsapp">تواصل عبر واتساب</string>
+    <string name="support_telegram">تواصل عبر تيليجرام</string>
+
+    <!-- FAQ -->
+    <string name="faq_title">الأسئلة الشائعة</string>
+    <string name="faq_q1">كيف يتم الشراء؟</string>
+    <string name="faq_a1">اختر المنتج المطلوب، ثم اضغط على زر \"شراء عبر واتساب\" أو \"شراء عبر تيليجرام\"، وسيتم تحويلك لتطبيق المراسلة برسالة جاهزة تحتوي تفاصيل طلبك.</string>
+    <string name="faq_q2">ما هي طرق الدفع المتاحة؟</string>
+    <string name="faq_a2">يتم تحديد طرق الدفع عند التواصل مع فريق الدعم عبر واتساب أو تيليجرام.</string>
+    <string name="faq_q3">كم يستغرق التسليم؟</string>
+    <string name="faq_a3">يختلف وقت التسليم حسب الخدمة، ويمكنك معرفته من صفحة تفاصيل كل منتج.</string>
+    <string name="faq_q4">هل يوجد ضمان؟</string>
+    <string name="faq_a4">نعم، جميع خدماتنا تأتي مع ضمان يتم توضيحه في صفحة كل منتج.</string>
+
+    <!-- Policies -->
+    <string name="policies_title">السياسات</string>
+    <string name="policy_privacy_title">سياسة الخصوصية</string>
+    <string name="policy_privacy_text">نحن في Zero Store نحترم خصوصيتك. لا نجمع أي بيانات شخصية من خلال التطبيق. جميع عمليات الشراء تتم خارج التطبيق عبر تطبيقات المراسلة.</string>
+    <string name="policy_terms_title">شروط الاستخدام</string>
+    <string name="policy_terms_text">باستخدامك لتطبيق Zero Store، فإنك توافق على أن التطبيق هو كتالوج لعرض الخدمات الرقمية فقط. جميع عمليات الشراء والدفع تتم خارج التطبيق.</string>
+    <string name="policy_refund_title">سياسة الاسترجاع</string>
+    <string name="policy_refund_text">في حال وجود مشكلة في الخدمة المقدمة، يرجى التواصل مع فريق الدعم خلال 24 ساعة من الشراء لمناقشة إمكانية الاسترجاع أو الاستبدال.</string>
+
+    <!-- Search -->
+    <string name="search_hint">ابحث عن منتج...</string>
+
+    <!-- Offers -->
+    <string name="offers_title">العروض الحالية</string>
+
+    <!-- Currencies -->
+    <string name="currency_usd">دولار</string>
+    
+    <!-- About -->
+    <string name="about_title">عن Zero Store</string>
+    <string name="about_text">متجر Zero Store هو وجهتك الأولى للخدمات الرقمية. نقدم لك أفضل الاشتراكات العالمية، شحن الألعاب، بطاقات الهدايا، وحلول التصميم والمونتاج بأسعار منافسة.\n\nهدفنا هو توفير تجربة شراء سهلة وآمنة مع ضمان كامل لجميع خدماتنا.\n\nجميع الطلبات تتم معالجتها بسرعة عالية، وفريق الدعم متواجد لخدمتك عبر واتساب وتيليجرام.</string>
 </resources>
