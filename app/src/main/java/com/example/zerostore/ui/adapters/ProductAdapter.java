@@ -1,4 +1,4 @@
-package com.example.zerostore;
+package com.example.zerostore.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,22 +6,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.zerostore.R;
+import com.example.zerostore.data.model.Product;
+import com.example.zerostore.data.local.DataProvider;
+import com.example.zerostore.ui.products.ProductDetailsActivity;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    private ArrayList<Product> products;
-    private ArrayList<Product> productsFull; // for search filter
+    private List<Product> products;
+    private List<Product> productsFull;
     private Context context;
 
-    public ProductAdapter(Context context, ArrayList<Product> products) {
+    public ProductAdapter(Context context, List<Product> products) {
         this.context = context;
-        this.products = new ArrayList<>(products);
-        this.productsFull = new ArrayList<>(products);
+        if (products != null) {
+            this.products = new ArrayList<>(products);
+            this.productsFull = new ArrayList<>(products);
+        } else {
+            this.products = new ArrayList<>();
+            this.productsFull = new ArrayList<>();
+        }
+    }
+
+    public void updateList(List<Product> newProducts) {
+        if (newProducts != null) {
+            this.products = new ArrayList<>(newProducts);
+            this.productsFull = new ArrayList<>(newProducts);
+            notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -35,7 +51,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = products.get(position);
 
-        // Set emoji icon based on category
         String emoji = getCategoryEmoji(product.getCategoryId());
         holder.tvEmoji.setText(emoji);
 
@@ -83,7 +98,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public void filter(String query) {
         products.clear();
-        if (query == null || query.isEmpty()) {
+        if (query == null || query.trim().isEmpty()) {
             products.addAll(productsFull);
         } else {
             String lowerQuery = query.toLowerCase();

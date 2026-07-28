@@ -1,39 +1,50 @@
-package com.example.zerostore;
+package com.example.zerostore.ui.main;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.zerostore.R;
+import com.example.zerostore.data.local.DataProvider;
+import com.example.zerostore.ui.adapters.BannerAdapter;
+import com.example.zerostore.ui.adapters.CategoryAdapter;
+import com.example.zerostore.ui.adapters.OfferAdapter;
+import com.example.zerostore.ui.adapters.ProductAdapter;
+import com.example.zerostore.ui.common.TextContentActivity;
+import com.example.zerostore.ui.favorites.FavoritesActivity;
+import com.example.zerostore.ui.search.SearchActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private View homeSection, categoriesSection, offersSection, supportSection;
     private BottomNavigationView bottomNav;
+    
+    private MainViewModel mainViewModel;
+    private ProductAdapter topAdapter;
+    private CategoryAdapter categoryAdapterHome;
+    private CategoryAdapter categoryAdapterAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find sections
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         homeSection = findViewById(R.id.homeSection);
         categoriesSection = findViewById(R.id.categoriesSection);
         offersSection = findViewById(R.id.offersSection);
         supportSection = findViewById(R.id.supportSection);
 
-        // Bottom Navigation
         bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -49,14 +60,29 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Setup all sections
         setupHome();
         setupCategories();
         setupOffers();
         setupSupport();
 
-        // Default to Home
         showSection(homeSection);
+        
+        observeViewModel();
+    }
+
+    private void observeViewModel() {
+        mainViewModel.getTopProducts().observe(this, products -> {
+            if (products != null && topAdapter != null) {
+                topAdapter.updateList(products);
+            }
+        });
+        
+        mainViewModel.getCategories().observe(this, categories -> {
+            if (categories != null) {
+                if (categoryAdapterHome != null) categoryAdapterHome.updateList(categories);
+                if (categoryAdapterAll != null) categoryAdapterAll.updateList(categories);
+            }
+        });
     }
 
     private void showSection(View section) {
@@ -67,19 +93,9 @@ public class MainActivity extends AppCompatActivity {
         section.setVisibility(View.VISIBLE);
     }
 
-    // ======================== HOME ========================
     private void setupHome() {
-        // Search button
-        findViewById(R.id.btnSearch).setOnClickListener(v -> {
-            startActivity(new Intent(this, SearchActivity.class));
-        });
-
-        // Favorites button
-        findViewById(R.id.btnFavorites).setOnClickListener(v -> {
-            startActivity(new Intent(this, FavoritesActivity.class));
-        });
-
-        // Search button was replaced by the Logo in the header xml
+        findViewById(R.id.btnSearch).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        findViewById(R.id.btnFavorites).setOnClickListener(v -> startActivity(new Intent(this, FavoritesActivity.class)));
 
         // Banners
         RecyclerView rvBanners = findViewById(R.id.rvBanners);
@@ -93,106 +109,74 @@ public class MainActivity extends AppCompatActivity {
 
         // Top Products
         RecyclerView rvTopProducts = findViewById(R.id.rvTopProducts);
-        ArrayList<Product> topProducts = DataProvider.getTopProducts();
-        ProductAdapter topAdapter = new ProductAdapter(this, topProducts);
+        topAdapter = new ProductAdapter(this, new ArrayList<>());
         rvTopProducts.setLayoutManager(new LinearLayoutManager(this));
         rvTopProducts.setNestedScrollingEnabled(false);
         rvTopProducts.setAdapter(topAdapter);
 
         // Categories
         RecyclerView rvHomeCategories = findViewById(R.id.rvHomeCategories);
-        ArrayList<Category> categories = DataProvider.getCategories();
-        CategoryAdapter categoryAdapter = new CategoryAdapter(this, categories);
+        categoryAdapterHome = new CategoryAdapter(this, new ArrayList<>());
         rvHomeCategories.setLayoutManager(new GridLayoutManager(this, 3));
         rvHomeCategories.setNestedScrollingEnabled(false);
-        rvHomeCategories.setAdapter(categoryAdapter);
+        rvHomeCategories.setAdapter(categoryAdapterHome);
     }
 
-    // ======================== CATEGORIES ========================
     private void setupCategories() {
         RecyclerView rvCategories = findViewById(R.id.rvCategories);
-        ArrayList<Category> categories = DataProvider.getCategories();
-        CategoryAdapter adapter = new CategoryAdapter(this, categories);
+        categoryAdapterAll = new CategoryAdapter(this, new ArrayList<>());
         rvCategories.setLayoutManager(new GridLayoutManager(this, 2));
-        rvCategories.setAdapter(adapter);
+        rvCategories.setAdapter(categoryAdapterAll);
     }
 
-    // ======================== OFFERS ========================
     private void setupOffers() {
         RecyclerView rvOffers = findViewById(R.id.rvOffers);
         ArrayList<String[]> offers = new ArrayList<>();
-        // [title, subtitle, action_type (categoryId or "offers")]
-        offers.add(new String[] { "🔥 عروض الذكاء الاصطناعي",
-                "ChatGPT Plus بـ24₪ | Gemini Pro سنة بـ40₪ | Super Grok بـ60₪", String.valueOf(DataProvider.CAT_AI) });
-        offers.add(new String[] { "📡 شرائح إلكترونية eSIM", "Wecom 500GB بـ53₪ | Cellcom 400GB بـ65₪ | 5G متاح!",
-                String.valueOf(DataProvider.CAT_ESIM) });
-        offers.add(new String[] { "📞 حزم جوال بأسعار مميزة", "150 دقيقة بـ14₪ | 600 دقيقة بـ30₪ | إنترنت واتساب بـ5₪",
-                String.valueOf(DataProvider.CAT_MOBILE) });
-        offers.add(new String[] { "🎮 شحن ألعاب", "شدات PUBG من 16₪ | Free Fire Diamonds بأسعار لا تُفوّت!",
-                String.valueOf(DataProvider.CAT_GAMING) });
-        offers.add(new String[] { "🧩 سوشال ميديا", "Telegram Premium 3 أشهر بـ55₪ | Snapchat+ بـ45₪ | TikTok Coins",
-                String.valueOf(DataProvider.CAT_SOFTWARE) });
-        offers.add(new String[] { "🎬 بث ومشاهدة", "شاهد VIP شهر بـ12₪ فقط! | Netflix | Disney+",
-                String.valueOf(DataProvider.CAT_STREAMING) });
-        offers.add(new String[] { "💼 تصميم ومونتاج", "CapCut Pro بـ15₪ | Adobe بـ25₪ | Canva Pro بـ15₪",
-                String.valueOf(DataProvider.CAT_DESIGN) });
+        offers.add(new String[] { "🔥 عروض الذكاء الاصطناعي", "ChatGPT Plus بـ24₪ | Gemini Pro سنة بـ40₪ | Super Grok بـ60₪", String.valueOf(DataProvider.CAT_AI) });
+        offers.add(new String[] { "📡 شرائح إلكترونية eSIM", "Wecom 500GB بـ53₪ | Cellcom 400GB بـ65₪ | 5G متاح!", String.valueOf(DataProvider.CAT_ESIM) });
+        offers.add(new String[] { "📞 حزم جوال بأسعار مميزة", "150 دقيقة بـ14₪ | 600 دقيقة بـ30₪ | إنترنت واتساب بـ5₪", String.valueOf(DataProvider.CAT_MOBILE) });
+        offers.add(new String[] { "🎮 شحن ألعاب", "شدات PUBG من 16₪ | Free Fire Diamonds بأسعار لا تُفوّت!", String.valueOf(DataProvider.CAT_GAMING) });
+        offers.add(new String[] { "🧩 سوشال ميديا", "Telegram Premium 3 أشهر بـ55₪ | Snapchat+ بـ45₪ | TikTok Coins", String.valueOf(DataProvider.CAT_SOFTWARE) });
+        offers.add(new String[] { "🎬 بث ومشاهدة", "شاهد VIP شهر بـ12₪ فقط! | Netflix | Disney+", String.valueOf(DataProvider.CAT_STREAMING) });
+        offers.add(new String[] { "💼 تصميم ومونتاج", "CapCut Pro بـ15₪ | Adobe بـ25₪ | Canva Pro بـ15₪", String.valueOf(DataProvider.CAT_DESIGN) });
 
         OfferAdapter offerAdapter = new OfferAdapter(this, offers);
         rvOffers.setLayoutManager(new LinearLayoutManager(this));
         rvOffers.setAdapter(offerAdapter);
     }
 
-    // ======================== SUPPORT ========================
     private void setupSupport() {
-        // WhatsApp Support
-        TextView btnWhatsapp = findViewById(R.id.btnSupportWhatsapp);
-        btnWhatsapp.setOnClickListener(v -> {
+        findViewById(R.id.btnSupportWhatsapp).setOnClickListener(v -> {
             try {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://wa.me/972567482488"));
-                startActivity(intent);
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/972567482488")));
             } catch (Exception e) {
                 Toast.makeText(this, "واتساب غير مثبت", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Telegram Support
-        TextView btnTelegram = findViewById(R.id.btnSupportTelegram);
-        btnTelegram.setOnClickListener(v -> {
+        findViewById(R.id.btnSupportTelegram).setOnClickListener(v -> {
             try {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://t.me/zero19"));
-                startActivity(intent);
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/zero19")));
             } catch (Exception e) {
                 Toast.makeText(this, "تيليجرام غير مثبت", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // FAQ Expandable
         setupFaqItem(R.id.faqQ1, R.id.faqA1);
         setupFaqItem(R.id.faqQ2, R.id.faqA2);
         setupFaqItem(R.id.faqQ3, R.id.faqA3);
         setupFaqItem(R.id.faqQ4, R.id.faqA4);
 
-        // Policies & About
         setupPolicyLink(R.id.btnAbout, getString(R.string.about_title), getString(R.string.about_text));
-        setupPolicyLink(R.id.btnPrivacy, getString(R.string.policy_privacy_title),
-                getString(R.string.policy_privacy_text));
+        setupPolicyLink(R.id.btnPrivacy, getString(R.string.policy_privacy_title), getString(R.string.policy_privacy_text));
         setupPolicyLink(R.id.btnTerms, getString(R.string.policy_terms_title), getString(R.string.policy_terms_text));
-        setupPolicyLink(R.id.btnRefund, getString(R.string.policy_refund_title),
-                getString(R.string.policy_refund_text));
+        setupPolicyLink(R.id.btnRefund, getString(R.string.policy_refund_title), getString(R.string.policy_refund_text));
     }
 
     private void setupFaqItem(int questionId, int answerId) {
         TextView question = findViewById(questionId);
         TextView answer = findViewById(answerId);
-        question.setOnClickListener(v -> {
-            if (answer.getVisibility() == View.GONE) {
-                answer.setVisibility(View.VISIBLE);
-            } else {
-                answer.setVisibility(View.GONE);
-            }
-        });
+        question.setOnClickListener(v -> answer.setVisibility(answer.getVisibility() == View.GONE ? View.VISIBLE : View.GONE));
     }
 
     private void setupPolicyLink(int viewId, String title, String content) {

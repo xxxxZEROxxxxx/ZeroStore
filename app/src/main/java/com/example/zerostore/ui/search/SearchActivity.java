@@ -1,4 +1,13 @@
-package com.example.zerostore;
+package com.example.zerostore.ui.search;
+import com.example.zerostore.R;
+import com.example.zerostore.data.model.*;
+import com.example.zerostore.data.local.*;
+import com.example.zerostore.ui.adapters.*;
+import com.example.zerostore.ui.main.*;
+import com.example.zerostore.ui.products.*;
+import com.example.zerostore.ui.search.*;
+import com.example.zerostore.ui.favorites.*;
+import com.example.zerostore.ui.common.*;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -84,3 +93,4 @@ public class SearchActivity extends AppCompatActivity {
         finish();
     }
 }
+

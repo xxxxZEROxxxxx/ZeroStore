@@ -1,4 +1,13 @@
-package com.example.zerostore;
+package com.example.zerostore.data.local;
+import com.example.zerostore.R;
+import com.example.zerostore.data.model.*;
+import com.example.zerostore.data.local.*;
+import com.example.zerostore.ui.adapters.*;
+import com.example.zerostore.ui.main.*;
+import com.example.zerostore.ui.products.*;
+import com.example.zerostore.ui.search.*;
+import com.example.zerostore.ui.favorites.*;
+import com.example.zerostore.ui.common.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,3 +59,4 @@ public class FavoritesManager {
         sharedPreferences.edit().putStringSet(KEY_FAVORITES, favorites).apply();
     }
 }
+

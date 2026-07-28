@@ -1,11 +1,16 @@
-package com.example.zerostore;
+package com.example.zerostore.ui.common;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.zerostore.R;
+import com.example.zerostore.ui.main.MainActivity;
+import com.example.zerostore.ui.onboarding.OnboardingActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -14,8 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        new Handler().postDelayed(() -> {
-            // Check if onboarding is completed
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             SharedPreferences prefs = getSharedPreferences("ZeroStorePrefs", MODE_PRIVATE);
             boolean onboardingCompleted = prefs.getBoolean("onboarding_completed", false);
 

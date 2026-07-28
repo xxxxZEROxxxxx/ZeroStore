@@ -1,4 +1,4 @@
-package com.example.zerostore;
+package com.example.zerostore.ui.products;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,66 +11,67 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import com.example.zerostore.R;
+import com.example.zerostore.data.local.DataProvider;
+import com.example.zerostore.data.model.Product;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private Product product;
     private String orderMessage;
+    private ProductViewModel productViewModel;
+    private boolean isProductFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
-        // Back button
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+
         ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        // Get product
         int productId = getIntent().getIntExtra("productId", -1);
-        product = DataProvider.getProductById(productId);
-
-        if (product == null) {
-            finish();
-            return;
-        }
-
-        // Build order message
-        buildOrderMessage();
-
-        // Populate UI
-        populateUI();
-
-        // Setup buttons
-        setupButtons();
-
-        // Setup Favorite
-        setupFavoriteButton();
+        
+        productViewModel.getProductById(productId).observe(this, p -> {
+            if (p != null) {
+                this.product = p;
+                buildOrderMessage();
+                populateUI();
+                setupButtons();
+                setupFavoriteButton();
+            } else {
+                Toast.makeText(this, "المنتج غير موجود", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     private void setupFavoriteButton() {
         ImageView btnFavorite = findViewById(R.id.btnFavorite);
-        updateFavoriteIcon(btnFavorite);
+        
+        productViewModel.isFavorite(product.getId()).observe(this, isFav -> {
+            isProductFavorite = (isFav != null && isFav);
+            updateFavoriteIcon(btnFavorite);
+        });
 
         btnFavorite.setOnClickListener(v -> {
-            boolean isFav = FavoritesManager.getInstance(this).isFavorite(product.getId());
-            if (isFav) {
-                FavoritesManager.getInstance(this).removeFavorite(product.getId());
+            if (isProductFavorite) {
+                productViewModel.removeFavorite(product.getId());
                 Toast.makeText(this, "تم الحذف من المفضلة", Toast.LENGTH_SHORT).show();
             } else {
-                FavoritesManager.getInstance(this).addFavorite(product.getId());
+                productViewModel.addFavorite(product.getId());
                 Toast.makeText(this, "تم الإضافة للمفضلة", Toast.LENGTH_SHORT).show();
             }
-            updateFavoriteIcon(btnFavorite);
         });
     }
 
     private void updateFavoriteIcon(ImageView view) {
-        boolean isFav = FavoritesManager.getInstance(this).isFavorite(product.getId());
-        if (isFav) {
+        if (isProductFavorite) {
             view.setImageResource(R.drawable.ic_heart_filled);
         } else {
             view.setImageResource(R.drawable.ic_heart_outline);
@@ -78,19 +79,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        // Category emoji as icon
         TextView tvIcon = findViewById(R.id.tvProductIcon);
         tvIcon.setText(getCategoryEmoji(product.getCategoryId()));
 
-        // Product Name
         TextView tvName = findViewById(R.id.tvProductName);
         tvName.setText(product.getNameAr());
 
-        // Price
         TextView tvPrice = findViewById(R.id.tvProductPrice);
         tvPrice.setText(product.getPrice() + " " + product.getCurrency());
 
-        // Chips
         TextView chipDuration = findViewById(R.id.chipDuration);
         chipDuration.setText("⏳ " + product.getDuration());
 
@@ -100,16 +97,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
         TextView chipWarranty = findViewById(R.id.chipWarranty);
         chipWarranty.setText("🛡️ " + product.getWarranty());
 
-        // Description
         TextView tvDesc = findViewById(R.id.tvProductDesc);
         tvDesc.setText(product.getDescriptionAr());
 
-        // Requirements
         TextView tvReqs = findViewById(R.id.tvProductReqs);
         String reqs = product.getRequirements();
         tvReqs.setText(reqs != null && !reqs.isEmpty() ? reqs : getString(R.string.product_not_specified));
 
-        // Notes
         LinearLayout notesLayout = findViewById(R.id.notesLayout);
         TextView tvNotes = findViewById(R.id.tvProductNotes);
         String notes = product.getNotesAr();
@@ -120,7 +114,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
             notesLayout.setVisibility(View.GONE);
         }
 
-        // Toolbar title
         TextView tvToolbar = findViewById(R.id.tvDetailToolbar);
         tvToolbar.setText(product.getNameAr());
     }
@@ -144,15 +137,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        // WhatsApp Button
         TextView btnWhatsapp = findViewById(R.id.btnBuyWhatsapp);
         btnWhatsapp.setOnClickListener(v -> openWhatsApp());
 
-        // Telegram Button
         TextView btnTelegram = findViewById(R.id.btnBuyTelegram);
         btnTelegram.setOnClickListener(v -> openTelegram());
 
-        // Copy Order Button
         TextView btnCopy = findViewById(R.id.btnCopyOrder);
         btnCopy.setOnClickListener(v -> copyOrderMessage());
     }
@@ -170,10 +160,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void openTelegram() {
         try {
-            // Copy message first, then open Telegram
             copyToClipboard(orderMessage);
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://t.me/zero19"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/zero19"));
             startActivity(intent);
             Toast.makeText(this, getString(R.string.order_copied), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -196,33 +184,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.app_not_installed_title))
                 .setMessage(getString(R.string.app_not_installed_message))
-                .setPositiveButton(getString(R.string.btn_copy), (dialog, which) -> {
-                    copyOrderMessage();
-                })
+                .setPositiveButton(getString(R.string.btn_copy), (dialog, which) -> copyOrderMessage())
                 .setNegativeButton(getString(R.string.btn_cancel), null)
                 .show();
     }
 
     private String getCategoryEmoji(int categoryId) {
         switch (categoryId) {
-            case DataProvider.CAT_AI:
-                return "🤖";
-            case DataProvider.CAT_GAMING:
-                return "🎮";
-            case DataProvider.CAT_STREAMING:
-                return "🎬";
-            case DataProvider.CAT_DESIGN:
-                return "🎨";
-            case DataProvider.CAT_GIFT_CARDS:
-                return "🎁";
-            case DataProvider.CAT_SOFTWARE:
-                return "📱";
-            case DataProvider.CAT_ESIM:
-                return "📡";
-            case DataProvider.CAT_MOBILE:
-                return "📞";
-            default:
-                return "📦";
+            case DataProvider.CAT_AI: return "🤖";
+            case DataProvider.CAT_GAMING: return "🎮";
+            case DataProvider.CAT_STREAMING: return "🎬";
+            case DataProvider.CAT_DESIGN: return "🎨";
+            case DataProvider.CAT_GIFT_CARDS: return "🎁";
+            case DataProvider.CAT_SOFTWARE: return "📱";
+            case DataProvider.CAT_ESIM: return "📡";
+            case DataProvider.CAT_MOBILE: return "📞";
+            default: return "📦";
         }
     }
 }

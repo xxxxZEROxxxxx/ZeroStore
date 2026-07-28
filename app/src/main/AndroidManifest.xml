@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +16,7 @@
 
         <!-- Splash Screen (Launcher) -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.common.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.ZeroStore.Splash">
             <intent-filter>
@@ -25,33 +27,33 @@
 
         <!-- Main Activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
 
         <!-- Product List Activity -->
         <activity
-            android:name=".ProductListActivity"
+            android:name=".ui.products.ProductListActivity"
             android:exported="false" />
 
         <!-- Product Details Activity -->
         <activity
-            android:name=".ProductDetailsActivity"
+            android:name=".ui.products.ProductDetailsActivity"
             android:exported="false" />
 
         <activity
-            android:name=".TextContentActivity"
+            android:name=".ui.common.TextContentActivity"
             android:exported="false" />
 
         <activity
-            android:name=".FavoritesActivity"
+            android:name=".ui.favorites.FavoritesActivity"
             android:exported="false" />
 
         <activity
-            android:name=".SearchActivity"
+            android:name=".ui.search.SearchActivity"
             android:exported="false" />
 
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
 
